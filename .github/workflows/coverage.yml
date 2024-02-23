@@ -11,7 +11,6 @@ on:
       - "/**"
 jobs:
   test:
-    name: Run tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -22,18 +21,18 @@ jobs:
         with:
           node-version: 14
 
-     - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm install
 
-    - name: Run the tests
-      run: npm test -- --coverage
+      - name: Run the tests
+        run: npm test -- --coverage
 
       - name: Send test report
         uses: 5monkeys/cobertura-action@master
         if: github.event_name == 'pull_request'
         with:
           path: ./github_webhook_listener/coverage.xml
-          repo_token: ${{ secrets.GH_ACCESS_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           minimum_coverage: 95
           skip_covered: False
           show_line: True
