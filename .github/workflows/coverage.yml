@@ -33,7 +33,7 @@ jobs:
         if: github.event_name == 'pull_request'
         with:
           path: ./github_webhook_listener/coverage.xml
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: ${{ secrets.GH_ACCESS_TOKEN }}
           minimum_coverage: 95
           skip_covered: False
           show_line: True
