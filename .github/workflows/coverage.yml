@@ -1,32 +1,39 @@
-name: Code Coverage
-
-on: [push, pull_request]
-
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "/**"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "/**"
 jobs:
-  build:
-
+  test:
+    name: Run tests
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x, 14.x]
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 2 
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
 
-    - name: Install dependencies
+     - name: Install dependencies
       run: npm install
 
     - name: Run the tests
       run: npm test -- --coverage
 
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v2
+      - name: Send test report
+        uses: 5monkeys/cobertura-action@master
+        if: github.event_name == 'pull_request'
+        with:
+          path: ./github_webhook_listener/coverage.xml
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          minimum_coverage: 95
+          skip_covered: False
+          show_line: True
